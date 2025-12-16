@@ -112,6 +112,15 @@ plt.ylabel("Fuel Efficiency (km/l)")
 plt.grid(True)
 plt.show()
 
+# Driver performance impact analysis
+sns.scatterplot(
+    data=df,
+    x='driver_performance_score',
+    y='fuel_efficiency_km_l'
+)
+plt.title('Driver Performance vs Fuel Efficiency')
+plt.show()
+
 
 
 
