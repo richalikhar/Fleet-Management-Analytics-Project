@@ -3,7 +3,6 @@
 
 # In[49]:
 
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -16,11 +15,7 @@ def extract_data(path="fleet_project_datasets_fixed.csv"):
 
 #df = pd.read_csv("fleet_project_datasets_fixed.csv")
 
-
-
 # In[50]:
-
-
 def clean_data(df):
     df = df.copy()
     # drop exact duplicates
@@ -53,17 +48,10 @@ def clean_data(df):
 
 
 # In[19]:
-
-
 df.info()
 
-
 # In[51]:
-
-
 def transform_data(df): 
-
-
     df = df.copy()
     # vehicle_age_months(from purchase date and year)
     df['purchase_date'] = pd.to_datetime(df['purchase_date'], errors='coerce')
@@ -79,10 +67,7 @@ def transform_data(df):
     df["Efficiency category"] = np.where(df["fuel_efficiency_km_l"] >= 10, "High", np.where(df["fuel_efficiency_km_l"] >= 7, "Medium", "Low") )
     return df
 
-
 # In[53]:
-
-
 def save_data(df, filename="fleet_project_datasets_fixed_new.csv"):
     Path(filename).parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(filename, index=False)
@@ -97,10 +82,9 @@ if __name__ == "__main__":
 
 
 # In[56]:
-
-
 df_new = pd.read_csv("fleet_project_datasets_fixed_new.csv")
 
+# Vehicle performance by make and model
 perf = df_new.groupby(['make', 'model'])['fuel_efficiency_km_l'].mean().reset_index()
 print(perf)
 
@@ -115,12 +99,9 @@ plt.xticks(rotation=45)
 plt.tight_layout()
 plt.show()
 
-
 # In[55]:
-
-
-#df_new = pd.read_csv("fleet_project_datasets_fixed_new.csv")
-   
+#df_new = pd.read_csv("fleet_project_datasets_fixed_new.csv")   
+# 	Age vs efficiency correlation analysis
 plt.figure(figsize=(8, 5))
 plt.scatter(df_new["vehicle_age_year"], df_new["fuel_efficiency_km_l"])
 
@@ -130,58 +111,6 @@ plt.ylabel("Fuel Efficiency (km/l)")
 
 plt.grid(True)
 plt.show()
-
-
-# In[47]:
-
-
-
-
-
-# In[37]:
-
-
-cost_trends = df_new.groupby(['make', 'model', "year"])["annual_maintenance_cost"].mean().reset_index()
-print(cost_trends)
-
-
-# In[52]:
-
-
-
-
-
-# In[53]:
-
-
-
-
-
-# In[10]:
-
-
-
-
-
-# In[11]:
-
-
-
-
-
-# In[39]:
-
-
-df_new.info()
-
-
-# In[48]:
-
-
-
-
-
-# In[ ]:
 
 
 
