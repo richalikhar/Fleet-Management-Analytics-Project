@@ -23,7 +23,7 @@ def clean_data(df):
     # Standardize date type  
     
     df['purchase_date'] = pd.to_datetime(df['purchase_date'], errors='coerce')
-    df['year'] = pd.to_datetime(df['year'], errors='coerce')
+    
     # Fix types
     numeric_cols = ['capacity_kg','current_mileage_km','fuel_efficiency_km_l','driver_performance_score','annual_maintenance_cost']
     for c in numeric_cols:
@@ -54,15 +54,13 @@ df.info()
 def transform_data(df): 
     df = df.copy()
     # vehicle_age_months(from purchase date and year)
-    df['purchase_date'] = pd.to_datetime(df['purchase_date'], errors='coerce')
-    df['date'] = pd.to_datetime(df['year'].astype(str) + "-01-01")
     df['Purchase_year'] = df['purchase_date'].dt.year
-    df['vehicle_age_year'] =  df['Purchase_year'] - df['date'].dt.year 
+    df['vehicle_age_year'] =  df['Purchase_year'] - df['year']
     df['vehicle_age_months']  = df['vehicle_age_year'] * 12        
     # Cost per km (annual_maintenance_cost / current_mileage_km)
     df['Cost_per_km '] = df['annual_maintenance_cost'] / df['current_mileage_km']
     # Monthly mileage (current_mileage_km / vehicle_age_months)
-    df['Monthly mileage'] = (df['current_mileage_km'] / df['vehicle_age_months']).fillna(0)   
+    df['Monthly mileage'] = (df['current_mileage_km'] / df['vehicle_age_months']).replace(0, 1)   
     #Efficiency category (High/Medium/Low based on fuel_efficiency_km_l)
     df["Efficiency category"] = np.where(df["fuel_efficiency_km_l"] >= 10, "High", np.where(df["fuel_efficiency_km_l"] >= 7, "Medium", "Low") )
     return df
@@ -82,7 +80,9 @@ if __name__ == "__main__":
 
 
 # In[56]:
-df_new = pd.read_csv("fleet_project_datasets_fixed_new.csv")
+ DATA_FILE = "fleet_project_datasets_fixed_new.csv"
+ df = pd.read_csv(DATA_FILE)
+#df_new = pd.read_csv("fleet_project_datasets_fixed_new.csv")
 
 # Vehicle performance by make and model
 perf = df_new.groupby(['make', 'model'])['fuel_efficiency_km_l'].mean().reset_index()
