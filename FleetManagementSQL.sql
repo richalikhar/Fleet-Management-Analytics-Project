@@ -150,9 +150,19 @@ ORDER BY avg_efficiency DESC;
 #	Maintenance cost trends across different manufacturers
 SELECT
     make,
-    vehicle_age_months AS month,
-    ROUND(SUM(annual_maintenance_cost), 2) AS total_maintenance_cost,
+    vehicle_age_year  AS Year,
     ROUND(AVG(annual_maintenance_cost), 2) AS avg_maintenance_cost
 FROM fleet_project_datasets_fixed_new
-GROUP BY make, vehicle_age_months
-ORDER BY make, vehicle_age_months;
+GROUP BY make, vehicle_age_year 
+ORDER BY make, vehicle_age_year ;
+
+
+# moving averages of maintenance costs
+SELECT 
+    purchase_date,
+    annual_maintenance_cost,
+    AVG(annual_maintenance_cost) OVER (
+        ORDER BY purchase_date 
+        ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+    ) as moving_avg_cost
+FROM fleet_project_datasets_fixed_new;
